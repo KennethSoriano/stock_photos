@@ -21,6 +21,8 @@ function App() {
     try {
       const response = await fetch(url)
       const data = await response.json()
+      setPhotos(data)
+      setLoading(false)
     } catch (error) {
       setLoading(false)
       console.log(error)
@@ -29,7 +31,42 @@ function App() {
   useEffect(() => {
     fetchImages()
   }, [])
-  return <h2>stock photos starter</h2>
+
+  useEffect(() => {
+    const event = window.addEventListener('scroll', () => {
+      if((!loading && window.innerHeight + window.scrollY) >= document.body.scrollHeight -2){
+
+      }
+    });
+    return () => window.removeEventListener('scroll', event)
+  }, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+  }
+  return (
+    <main>
+      <section className="search">
+        <form className="search-form">
+          <input type='text' placeholder='search' className='form-input' />
+          <button type='submit' className='submit-btn' onClick={handleSubmit}>
+            <FaSearch />
+          </button>
+        </form>
+      </section>
+      <section className='photos'>
+        <div className="photos-center">
+          {photos.map((image) => {
+            return (
+              <Photo key={image.id} {...image} />
+            )
+          })}
+        </div>
+        {loading && <h2 className='loading'>Loading...</h2>}
+      </section>
+    </main>
+  )
 }
 
 export default App
